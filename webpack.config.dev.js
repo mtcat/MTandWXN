@@ -25,7 +25,7 @@ let config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['react', 'stage-0'],
+            presets: ['env', 'react', 'stage-0'],
             plugins: [['import', { libraryName: 'antd-mobile', style: 'css' }]],
             env: {
               development: {
