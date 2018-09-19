@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs, WhiteSpace } from 'antd-mobile'
+import { Tabs, WhiteSpace, Progress, NoticeBar } from 'antd-mobile'
 
 const tabs = [
   { title: '天' },
@@ -13,12 +13,19 @@ const style = {
   justifyContent: 'center',
   height: '150px',
   backgroundColor: '#fff',
+  fontSize: '24px',
 }
+const mt147 = { left: 'unset', top: '147px' }
 const startTime = new Date(2018, 4, 27, 13, 0, 0).getTime()
 
 class Home extends React.Component {
   state = {
-    total: '',
+    total: {
+      days: '', 
+      hours: '', 
+      minutes: '', 
+      seconds: '',
+    },
     days: '',
     hours: '',
     minutes: '',
@@ -43,6 +50,43 @@ class Home extends React.Component {
     })
   }
 
+  total = timestamp => {
+    let interval = (timestamp - startTime) / 1000,
+      days = interval / (24 * 60 * 60),
+      hours = (interval % (24 * 60 * 60)) / (60 * 60),
+      minutes = ((interval % (24 * 60 * 60)) % (60 * 60)) / 60,
+      seconds = ((interval % (24 * 60 * 60)) % (60 * 60)) % 60
+    return {
+      days,
+      hours,
+      minutes,
+      seconds,
+    }
+  }
+
+  days = timestamp => {
+    let hours = this.hours(timestamp)
+    let days = hours / 24
+    return days
+  }
+
+  hours = timestamp => {
+    let minutes = this.minutes(timestamp)
+    let hours = minutes / 60
+    return hours
+  }
+
+  minutes = timestamp => {
+    let seconds = this.seconds(timestamp)
+    let minutes = seconds / 60
+    return minutes
+  }
+
+  seconds = timestamp => {
+    let seconds = (timestamp - startTime) / 1000
+    return seconds
+  }
+
   floor = num => {
     return Math.floor(num) + ''
   }
@@ -55,41 +99,12 @@ class Home extends React.Component {
     return str
   }
 
-  total = timestamp => {
-    let interval = (timestamp - startTime) / 1000,
-      days = interval / (24 * 60 * 60),
-      hours = (interval % (24 * 60 * 60)) / (60 * 60),
-      minutes = ((interval % (24 * 60 * 60)) % (60 * 60)) / 60,
-      seconds = ((interval % (24 * 60 * 60)) % (60 * 60)) % 60
-    return `${this.floor(days)}天${this.format(hours)}小时${this.format(minutes)}分钟${this.format(seconds)}秒`
-  }
-
-  days = timestamp => {
-    let hours = this.hours(timestamp)
-    let days = this.floor(hours / 24)
-    return days
-  }
-
-  hours = timestamp => {
-    let minutes = this.minutes(timestamp)
-    let hours = this.floor(minutes / 60)
-    return hours
-  }
-
-  minutes = timestamp => {
-    let seconds = this.seconds(timestamp)
-    let minutes = this.floor(seconds / 60)
-    return minutes
-  }
-
-  seconds = timestamp => {
-    let seconds = this.floor((timestamp - startTime) / 1000)
-    return seconds
-  }
-
   render() {
+    let { days, hours, minutes, seconds } = this.state.total
+
     return (
       <div>
+        <NoticeBar mode="closable" icon={null}>Hello.</NoticeBar>
         <Tabs
           tabs={tabs}
           initialPage={1}
@@ -101,21 +116,24 @@ class Home extends React.Component {
           }}
         >
           <div key="days" style={style}>
-            {`${this.state.days}天`}
+            {`${this.floor(this.state.days)}天`}
           </div>
           <div key="hours" style={style}>
-            {`${this.state.hours}小时`}
+            {`${this.floor(this.state.hours)}小时`}
+            <Progress percent={hours / 24 * 100} position="fixed" unfilled={false} style={mt147} />
           </div>
           <div key="minutes" style={style}>
-            {`${this.state.minutes}分钟`}
+            {`${this.floor(this.state.minutes)}分钟`}
+            <Progress percent={minutes / 60 * 100} position="fixed" unfilled={false} style={mt147} />
           </div>
           <div key="seconds" style={style}>
-            {`${this.state.seconds}秒`}
+            {`${this.floor(this.state.seconds)}秒`}
+            <Progress percent={seconds / 60 * 100} position="fixed" unfilled={false} style={mt147} />
           </div>
         </Tabs>
         <WhiteSpace />
         <div style={style}>
-          {this.state.total}
+          {`${this.floor(days)}天${this.format(hours)}小时${this.format(minutes)}分钟${this.format(seconds)}秒`}
         </div>
       </div>
     )
