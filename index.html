@@ -6,49 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>index</title>
-  <style>
-    html {
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    #app {
-      text-align: center;
-    }
-  </style>
+  <title>MT & WXN</title>
 </head>
 
 <body>
-  <div id="app">
-    <div class="tit">MT & WXN</div>
-    <div class="time"></div>
-  </div>
-  <script>
-    var time = document.querySelector('.time')
-    cd()
-    function cd() {
-      var start = new Date('2018-5-27 13:00:00').valueOf()
-      var now = Date.now()
-      var interval = (now - start) / 1000
-      var day = interval / (24 * 60 * 60)
-      var hours = (interval % (24 * 60 * 60)) / (60 * 60)
-      var minutes = (interval % (24 * 60 * 60) % (60 * 60)) / 60
-      var seconds = interval % (24 * 60 * 60) % (60 * 60) % 60
-
-      time.innerHTML = Math.floor(day) + '天' + Math.floor(hours) + '小时' + Math.floor(minutes) + '分钟' + Math.floor(seconds) + '秒'
-      setTimeout(cd, 1000)
-    }
-  </script>
+  <div id="app"></div>
 </body>
 
 </html>
