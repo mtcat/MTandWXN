@@ -1,5 +1,6 @@
 import React from 'react'
-import { Tabs, WhiteSpace, Progress, NoticeBar } from 'antd-mobile'
+import { Tabs, WhiteSpace, NoticeBar } from 'antd-mobile'
+import ProgressPanel from './ProgressPanel'
 
 const tabs = [
   { title: '天' },
@@ -7,15 +8,6 @@ const tabs = [
   { title: '分' },
   { title: '秒' },
 ]
-const style = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '150px',
-  backgroundColor: '#fff',
-  fontSize: '24px',
-}
-const mt147 = { left: 'unset', top: '147px' }
 const startTime = new Date(2018, 4, 27, 13, 0, 0).getTime()
 
 class Home extends React.Component {
@@ -115,26 +107,13 @@ class Home extends React.Component {
             console.log('onTabClick', index, tab)
           }}
         >
-          <div key="days" style={style}>
-            {`${this.floor(this.state.days)}天`}
-          </div>
-          <div key="hours" style={style}>
-            {`${this.floor(this.state.hours)}小时`}
-            <Progress percent={hours / 24 * 100} position="fixed" unfilled={false} style={mt147} />
-          </div>
-          <div key="minutes" style={style}>
-            {`${this.floor(this.state.minutes)}分钟`}
-            <Progress percent={minutes / 60 * 100} position="fixed" unfilled={false} style={mt147} />
-          </div>
-          <div key="seconds" style={style}>
-            {`${this.floor(this.state.seconds)}秒`}
-            <Progress percent={seconds / 60 * 100} position="fixed" unfilled={false} style={mt147} />
-          </div>
+          <ProgressPanel key="days" text={`${this.floor(this.state.days)}天`} />
+          <ProgressPanel key="hours" text={`${this.floor(this.state.hours)}小时`} percent={hours / 24 * 100} />
+          <ProgressPanel key="minutes" text={`${this.floor(this.state.minutes)}分钟`} percent={minutes / 60 * 100} />
+          <ProgressPanel key="seconds" text={`${this.floor(this.state.seconds)}秒`} percent={seconds / 60 * 100} />
         </Tabs>
         <WhiteSpace />
-        <div style={style}>
-          {`${this.floor(days)}天${this.format(hours)}小时${this.format(minutes)}分钟${this.format(seconds)}秒`}
-        </div>
+        <ProgressPanel text={`${this.floor(days)}天${this.format(hours)}小时${this.format(minutes)}分钟${this.format(seconds)}秒`} />
       </div>
     )
   }
