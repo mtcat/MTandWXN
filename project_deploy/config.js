@@ -1,6 +1,6 @@
 module.exports = {
   type: 'git',
   repo: 'git@github.com:mtcat/MTandWXN.git',
-  branch: 'deploy_public',
+  branch: 'gh-pages',
   public_dir: 'dist',
 };

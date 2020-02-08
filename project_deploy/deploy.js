@@ -14,7 +14,7 @@ const swigHelpers = {
 };
 
 module.exports = function(args) {
-  const baseDir = __dirname;
+  const baseDir = process.cwd();
   const deployDir = pathFn.join(baseDir, '.deploy_git');
   const publicDir = args.public_dir;
   let extendDirs = args.extend_dirs;
