@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tabs, WhiteSpace, NoticeBar } from 'antd-mobile'
+import { Tabs, WhiteSpace } from 'antd-mobile'
 import ProgressPanel from './ProgressPanel'
 
 const tabs = [
@@ -96,7 +96,6 @@ class Home extends React.Component {
 
     return (
       <div>
-        <NoticeBar mode="closable" icon={null}>Hello.</NoticeBar>
         <Tabs
           tabs={tabs}
           initialPage={1}
