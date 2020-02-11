@@ -51,7 +51,7 @@ class Deploy {
       return;
     }
 
-    fs.exists(deployDir)
+    hfs.exists(deployDir)
       .then(exist => {
         if (exist) return;
 
@@ -62,7 +62,7 @@ class Deploy {
       .then(() => {
         log.info('Clearing .deploy_git folder...');
 
-        return fs.emptyDir(deployDir);
+        return hfs.emptyDir(deployDir);
       })
       .then(() => {
         const opts = {};
