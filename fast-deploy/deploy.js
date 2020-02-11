@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('./fs');
+const hfs = require('hexo-fs');
 const swig = require('swig-templates');
 const moment = require('moment');
 const spawn = require('hexo-util/lib/spawn');
@@ -85,7 +86,7 @@ class Deploy {
           opts.ignorePattern = new RegExp(ignorePattern.public);
         }
 
-        return fs.copyDir(publicDir, deployDir, opts);
+        return hfs.copyDir(publicDir, deployDir, opts);
       })
       .then(() => {
         return parseConfig(args);
