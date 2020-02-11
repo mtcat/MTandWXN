@@ -6,7 +6,7 @@
     "dev": "node app.js",
     "build": "npm run clean && webpack --config ./webpack.config.prod.js",
     "clean": "rimraf dist",
-    "deploy": "node ./project_deploy/index.js"
+    "deploy": "node ./fast-deploy/index.js"
   },
   "author": "mtcat",
   "devDependencies": {

@@ -11,7 +11,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}\\project_deploy\\index.js"
+      "program": "${workspaceFolder}\\fast-deploy\\index.js"
     }
   ]
 }
