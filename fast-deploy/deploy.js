@@ -104,7 +104,7 @@ class Deploy {
     const userName = args.name || args.user || args.userName || '';
     const userEmail = args.email || args.userEmail || '';
 
-    return fs
+    return hfs
       .writeFile(path.join(deployDir, 'placeholder'), '')
       .then(() => {
         return git('init');
@@ -144,9 +144,9 @@ class Deploy {
           // Do nothing. It's OK if nothing to commit.
         });
       })
-      .then(() => {
-        return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
-      });
+      // .then(() => {
+      //   return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
+      // });
   }
 }
 
