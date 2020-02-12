@@ -3,7 +3,7 @@ const fs = require('./fs');
 const hfs = require('hexo-fs');
 const swig = require('swig-templates');
 const moment = require('moment');
-const spawn = require('hexo-util/lib/spawn');
+const spawn = require('./spawn');
 const parseConfig = require('./parse_config');
 const logger = require('hexo-log');
 
@@ -26,12 +26,6 @@ class Deploy {
     this.args = args;
     this.deployDir = deployDir;
     this.git = (...args) => {
-
-      console.log('deployDir', deployDir)
-      console.log('args', args)
-      debugger
-
-
       return spawn('git', args, {
         cwd: deployDir,
         verbose,
@@ -57,7 +51,7 @@ class Deploy {
       return;
     }
 
-    hfs.exists(deployDir)
+    fs.exists(deployDir)
       .then(exist => {
         if (exist) return;
 
@@ -68,7 +62,7 @@ class Deploy {
       .then(() => {
         log.info('Clearing .deploy_git folder...');
 
-        return hfs.emptyDir(deployDir);
+        return fs.emptyDir(deployDir);
       })
       .then(() => {
         const opts = {};
@@ -92,7 +86,7 @@ class Deploy {
           opts.ignorePattern = new RegExp(ignorePattern.public);
         }
 
-        return hfs.copyDir(publicDir, deployDir, opts);
+        return fs.copyDir(publicDir, deployDir, opts);
       })
       .then(() => {
         return parseConfig(args);
@@ -110,7 +104,7 @@ class Deploy {
     const userName = args.name || args.user || args.userName || '';
     const userEmail = args.email || args.userEmail || '';
 
-    return hfs
+    return fs
       .writeFile(path.join(deployDir, 'placeholder'), '')
       .then(() => {
         return git('init');
@@ -144,15 +138,14 @@ class Deploy {
     const git = this.git;
     const message = this.commitMessage();
 
-    return git('add', '-A')
-      .then(() => {
-        return git('commit', '-m', message).catch(() => {
-          // Do nothing. It's OK if nothing to commit.
-        });
-      })
-      // .then(() => {
-      //   return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
-      // });
+    return git('add', '-A').then(() => {
+      return git('commit', '-m', message).catch(() => {
+        // Do nothing. It's OK if nothing to commit.
+      });
+    });
+    // .then(() => {
+    //   return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
+    // });
   }
 }
 

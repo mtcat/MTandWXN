@@ -70,7 +70,9 @@ function exists(path) {
 function emptyDir(path, isRemove = false) {
   _pathError(path);
 
-  const filesInfo = _readAndGetFilesInfo(path);
+  const filesInfo = _readAndGetFilesInfo(path).filter(
+    file => file.filename !== '.git'
+  );
 
   filesInfo.forEach(file => {
     if (file.isDirectory) {
