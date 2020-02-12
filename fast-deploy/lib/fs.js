@@ -2,15 +2,14 @@ const P = require('bluebird');
 const fs = require('fs');
 const { join, dirname } = require('path');
 
-const readdirSync = fs.readdirSync;
 const statSync = fs.statSync;
-const unlinkSync = fs.unlinkSync;
-const rmdirSync = fs.rmdirSync;
-const copyFileSync = fs.copyFileSync;
+const readdirAsync = P.promisify(fs.readdir);
 const accessAsync = P.promisify(fs.access);
-const mkdirAsync = fs.mkdir;
-const writeFileAsync = fs.writeFile;
-const copyFileAsync = fs.copyFile;
+const mkdirAsync = P.promisify(fs.mkdir);
+const writeFileAsync = P.promisify(fs.writeFile);
+const rmdirAsync = P.promisify(fs.rmdir);
+const unlinkAsync = P.promisify(fs.unlink);
+const copyFileAsync = P.promisify(fs.copyFile);
 
 function _pathError(path) {
   if (!path) {
@@ -19,8 +18,7 @@ function _pathError(path) {
 }
 
 function _readAndGetFilesInfo(path) {
-  const files = readdirSync(path);
-  const filesInfo = files.map(filename => {
+  return readdirAsync(path).map(filename => {
     const fullPath = join(path, filename);
     const stats = statSync(fullPath);
 
@@ -30,32 +28,20 @@ function _readAndGetFilesInfo(path) {
       path: fullPath,
     };
   });
-
-  return filesInfo;
 }
 
 function _checkParent(path) {
   _pathError(path);
 
-  return new Promise((resolve, reject) => {
-    const dir = dirname(path);
+  const dir = dirname(path);
 
-    mkdirAsync(dir, err => {
-      resolve();
-    });
+  return mkdirAsync(dir).catch(err => {
+    if (err.cause.code !== 'EEXIST') throw err;
   });
 }
 
 function exists(path) {
   _pathError(path);
-
-  // return new Promise((resolve, reject) => {
-  //   fs.access(path, fs.constants.F_OK, err => {
-  //     const bool = err ? false : true;
-  //     debugger
-  //     resolve(bool);
-  //   });
-  // });
 
   return accessAsync(path, fs.constants.F_OK)
     .then(
@@ -70,48 +56,36 @@ function exists(path) {
 function emptyDir(path, isRemove = false) {
   _pathError(path);
 
-  const filesInfo = _readAndGetFilesInfo(path).filter(
-    file => file.filename !== '.git'
-  );
-
-  filesInfo.forEach(file => {
-    if (file.isDirectory) {
-      emptyDir(file.path, true);
-    } else {
-      unlinkSync(file.path);
-    }
-  });
-
-  if (isRemove) {
-    rmdirSync(path);
-  }
+  return _readAndGetFilesInfo(path)
+    .filter(file => file.filename !== '.git')
+    .each(file => {
+      if (file.isDirectory) {
+        return emptyDir(file.path, true);
+      } else {
+        return unlinkAsync(file.path);
+      }
+    })
+    .then(() => {
+      if (isRemove) return rmdirAsync(path);
+    });
 }
 
 function writeFile(path, data) {
   _pathError(path);
 
-  return new Promise((resolve, reject) => {
-    _checkParent(path).then(() => {
-      writeFileAsync(path, data, err => {
-        if (err) throw err;
-        resolve();
-      });
-    });
-  });
+  return _checkParent(path).then(() => writeFileAsync(path, data));
 }
 
-function copyDir(publicDir, deployDir, opts) {
-  const filesInfo = _readAndGetFilesInfo(publicDir);
-
-  filesInfo.forEach(file => {
+function copyDir(publicDir, deployDir) {
+  return _readAndGetFilesInfo(publicDir).each(file => {
     const destDir = join(deployDir, file.filename);
 
     if (file.isDirectory) {
-      copyDir(file.path, destDir, opts);
+      return copyDir(file.path, destDir);
     } else {
-      _checkParent(destDir).then(() => {
-        copyFileSync(file.path, destDir);
-      });
+      return _checkParent(destDir).then(() =>
+        copyFileAsync(file.path, destDir)
+      );
     }
   });
 }

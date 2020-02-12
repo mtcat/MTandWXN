@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('./fs');
-const hfs = require('hexo-fs');
 const swig = require('swig-templates');
 const moment = require('moment');
 const spawn = require('./spawn');
@@ -18,8 +17,6 @@ class Deploy {
     const baseDir = process.cwd();
     const deployDir = path.join(baseDir, '.deploy_git');
     const publicDir = args.public_dir;
-    const ignoreHidden = args.ignore_hidden;
-    const ignorePattern = args.ignore_pattern;
     const log = logger(args);
     const verbose = !args.silent;
 
@@ -43,7 +40,6 @@ class Deploy {
           repo: <repository url>
           branch: [branch]
           message: [message]
-          extend_dirs: [extend directory]
       `;
 
       console.log(help);
@@ -65,28 +61,7 @@ class Deploy {
         return fs.emptyDir(deployDir);
       })
       .then(() => {
-        const opts = {};
-
-        log.info('Copying files from public folder...');
-
-        if (typeof ignoreHidden === 'object') {
-          opts.ignoreHidden = ignoreHidden.public;
-        } else {
-          opts.ignoreHidden = ignoreHidden;
-        }
-
-        if (typeof ignorePattern === 'string') {
-          opts.ignorePattern = new RegExp(ignorePattern);
-        } else if (
-          typeof ignorePattern === 'object' &&
-          Reflect.apply(Object.prototype.hasOwnProperty, ignorePattern, [
-            'public',
-          ])
-        ) {
-          opts.ignorePattern = new RegExp(ignorePattern.public);
-        }
-
-        return fs.copyDir(publicDir, deployDir, opts);
+        return fs.copyDir(publicDir, deployDir);
       })
       .then(() => {
         return parseConfig(args);
