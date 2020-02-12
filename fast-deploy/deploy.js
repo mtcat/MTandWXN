@@ -68,7 +68,7 @@ class Deploy {
       .then(() => {
         log.info('Clearing .deploy_git folder...');
 
-        return fs.emptyDir(deployDir);
+        return hfs.emptyDir(deployDir);
       })
       .then(() => {
         const opts = {};
@@ -150,9 +150,9 @@ class Deploy {
           // Do nothing. It's OK if nothing to commit.
         });
       })
-      .then(() => {
-        return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
-      });
+      // .then(() => {
+      //   return git('push', '-u', repo.url, 'HEAD:' + repo.branch, '--force');
+      // });
   }
 }
 
