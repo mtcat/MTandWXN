@@ -26,6 +26,12 @@ class Deploy {
     this.args = args;
     this.deployDir = deployDir;
     this.git = (...args) => {
+
+      console.log('deployDir', deployDir)
+      console.log('args', args)
+      debugger
+
+
       return spawn('git', args, {
         cwd: deployDir,
         verbose,
@@ -62,7 +68,7 @@ class Deploy {
       .then(() => {
         log.info('Clearing .deploy_git folder...');
 
-        return hfs.emptyDir(deployDir);
+        return fs.emptyDir(deployDir);
       })
       .then(() => {
         const opts = {};
