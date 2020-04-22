@@ -9,10 +9,9 @@ script:
   - yarn build
 deploy:
   local_dir: dist
-  provider: pages:git
-  cleanup: true
+  provider: pages
+  skip_cleanup: true
   github_token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
   keep_history: true
-  edge: true
   on:
     branch: master
