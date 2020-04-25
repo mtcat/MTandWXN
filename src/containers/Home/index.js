@@ -113,6 +113,7 @@ class Home extends React.Component {
         </Tabs>
         <WhiteSpace />
         <ProgressPanel text={`${this.floor(days)}天${this.format(hours)}小时${this.format(minutes)}分钟${this.format(seconds)}秒`} />
+        <div></div>
       </div>
     )
   }
